@@ -9,7 +9,7 @@ use Sylius\Bundle\CustomerBundle\Form\Type\CustomerType;
 use Symfony\Component\Form\AbstractTypeExtension;
 use Symfony\Component\Form\FormBuilderInterface;
 
-class CustomerTypeExtensionSpec extends ObjectBehavior
+final class CustomerTypeExtensionSpec extends ObjectBehavior
 {
     function it_extends_an_abstract_type_extension()
     {
@@ -23,7 +23,7 @@ class CustomerTypeExtensionSpec extends ObjectBehavior
 
     function it_adds_user_form_subscriber(FormBuilderInterface $builder)
     {
-        $builder->addEventSubscriber(new AddUserFormSubscriber(AppUserType::class))->shouldBeCalled();
+        $builder->addEventSubscriber(new AddUserFormSubscriber(AppUserType::class))->willReturn($builder)->shouldBeCalled();
 
         $this->buildForm($builder, []);
     }
