@@ -13,8 +13,11 @@ use Symfony\Component\Process\Exception\RuntimeException;
 
 final class CommandExecutor
 {
-    public function __construct(private InputInterface $input, private OutputInterface $output, private Application $application)
-    {
+    public function __construct(
+        private InputInterface $input,
+        private OutputInterface $output,
+        private Application $application,
+    ) {
     }
 
     /**
@@ -49,7 +52,7 @@ final class CommandExecutor
         $defaultParameters = ['--no-debug' => true];
 
         if ($this->input->hasOption('env')) {
-            $defaultParameters['--env'] = $this->input->hasOption('env') ? $this->input->getOption('env') : 'dev';
+            $defaultParameters['--env'] = $this->input->getOption('env');
         }
 
         if ($this->input->hasOption('no-interaction') && true === $this->input->getOption('no-interaction')) {
