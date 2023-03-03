@@ -7,7 +7,6 @@ namespace App\Tests\Behat\Context\Setup;
 use Behat\Behat\Context\Context;
 use Monofony\Bridge\Behat\Service\SharedStorageInterface;
 use Monofony\Contracts\Core\Model\Customer\CustomerInterface;
-use Monofony\Contracts\Core\Model\User\AppUserInterface;
 use Sylius\Component\Resource\Factory\FactoryInterface;
 use Sylius\Component\Resource\Repository\RepositoryInterface;
 
@@ -17,14 +16,13 @@ final class CustomerContext implements Context
         private SharedStorageInterface $sharedStorage,
         private RepositoryInterface $customerRepository,
         private FactoryInterface $customerFactory,
-        private FactoryInterface $appUserFactory,
     ) {
     }
 
     /**
      * @Given there is a customer :name with email :email
      */
-    public function thereIsCustomerWithNameAndEmail($name, $email): void
+    public function thereIsCustomerWithNameAndEmail(string $name, string $email): void
     {
         $partsOfName = explode(' ', $name);
         $customer = $this->createCustomer($email, $partsOfName[0], $partsOfName[1]);
@@ -34,7 +32,7 @@ final class CustomerContext implements Context
     /**
      * @Given there is (also )a customer :email
      */
-    public function thereIsCustomer($email): void
+    public function thereIsCustomer(string $email): void
     {
         $customer = $this->createCustomer($email);
 
@@ -58,7 +56,7 @@ final class CustomerContext implements Context
     /**
      * @Given there is customer :email with first name :firstName
      */
-    public function thereIsCustomerWithFirstName($email, $firstName): void
+    public function thereIsCustomerWithFirstName(string $email, string $firstName): void
     {
         $customer = $this->createCustomer($email, $firstName);
 
@@ -97,37 +95,6 @@ final class CustomerContext implements Context
         if (null !== $createdAt) {
             $customer->setCreatedAt($createdAt);
         }
-
-        $this->sharedStorage->set('customer', $customer);
-
-        return $customer;
-    }
-
-    private function createCustomerWithUserAccount(
-        string $email,
-        string $password,
-        bool $enabled = true,
-        string $firstName = null,
-        string $lastName = null,
-        string $role = null
-    ): CustomerInterface {
-        /** @var AppUserInterface $user */
-        $user = $this->appUserFactory->createNew();
-        /** @var CustomerInterface $customer */
-        $customer = $this->customerFactory->createNew();
-
-        $customer->setFirstName($firstName);
-        $customer->setLastName($lastName);
-        $customer->setEmail($email);
-
-        $user->setUsername($email);
-        $user->setPlainPassword($password);
-        $user->setEnabled($enabled);
-        if (null !== $role) {
-            $user->addRole($role);
-        }
-
-        $customer->setUser($user);
 
         $this->sharedStorage->set('customer', $customer);
 
